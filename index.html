@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Receptionist Demo · Cole Ormont</title>
+<meta name="description" content="Try a 24/7 website receptionist that answers customer questions and texts you the lead.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--paper:#f6f6f2;--sheet:#fff;--ink:#191b1f;--muted:#5c6068;--rule:#dcdcd4;--pen:#2442c9;--pen-ink:#fff;--bub:#eceee8;--ok:#1d7a46;
+--display:'Bricolage Grotesque',Arial,sans-serif;--body:'Figtree','Segoe UI',Arial,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121317;--sheet:#1a1c21;--ink:#ecedef;--muted:#a2a6ae;--rule:#2c2f36;--pen:#7d95ff;--pen-ink:#0f1322;--bub:#24272e;--ok:#5fcf8f;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#121317;--sheet:#1a1c21;--ink:#ecedef;--muted:#a2a6ae;--rule:#2c2f36;--pen:#7d95ff;--pen-ink:#0f1322;--bub:#24272e;--ok:#5fcf8f;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--body);padding:0 16px}
+.wrap{max-width:1080px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.brand{font:800 22px/1 var(--display);text-decoration:none;color:inherit}.brand span{color:var(--pen)}
+.btn{display:inline-flex;align-items:center;justify-content:center;font:700 16px/1 var(--body);padding:14px 20px;border-radius:6px;background:var(--pen);color:var(--pen-ink);text-decoration:none;border:0;cursor:pointer}
+.btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.label{font:500 12.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 400px;gap:56px;align-items:start;padding:56px 0}
+.grid>*{min-width:0}
+h1{font:800 clamp(40px,6vw,68px)/1.02 var(--display);letter-spacing:-.02em;margin:16px 0 0}
+.lede{font-size:19px;color:var(--muted);margin:20px 0 0;max-width:40ch}
+ul.pts{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:14px}
+ul.pts li{display:grid;grid-template-columns:28px 1fr;gap:10px}
+ul.pts b{display:block}ul.pts span{color:var(--muted);font-size:15.5px}
+.ck{width:24px;height:24px;border-radius:50%;background:var(--pen);color:var(--pen-ink);display:grid;place-items:center;font-size:13px;font-weight:700;margin-top:2px}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.note{margin-top:18px;font-size:14px;color:var(--muted);max-width:52ch}
+/* phone */
+.phone{background:var(--ink);border-radius:34px;padding:10px;box-shadow:0 30px 60px -30px rgba(0,0,0,.55);position:sticky;top:20px}
+.screen{background:var(--sheet);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;height:640px}
+.bar{padding:16px 18px;border-bottom:1px solid var(--rule);display:flex;gap:12px;align-items:center}
+.av{width:38px;height:38px;border-radius:50%;background:#2f7d3b;color:#fff;display:grid;place-items:center;font:800 15px var(--display)}
+.bar b{display:block;font-size:15.5px;line-height:1.2}.bar small{color:var(--ok);font-size:12.5px;font-weight:600}
+.msgs{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:82%;padding:10px 13px;border-radius:18px;font-size:15px;line-height:1.45;white-space:pre-line}
+.m.bot{background:var(--bub);align-self:flex-start;border-bottom-left-radius:6px}
+.m.me{background:var(--pen);color:var(--pen-ink);align-self:flex-end;border-bottom-right-radius:6px}
+.typing{display:inline-flex;gap:4px}.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
+.chip{font:600 13.5px var(--body);padding:8px 12px;border-radius:999px;border:1.5px solid var(--pen);color:var(--pen);background:transparent;cursor:pointer}
+form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--rule)}
+input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink)}
+input:focus{outline:none;border-color:var(--pen)}
+form button{border:0;border-radius:999px;background:var(--pen);color:var(--pen-ink);font:700 15px var(--body);padding:0 16px;cursor:pointer}
+.alert{margin-top:16px;background:var(--sheet);border:1px solid var(--rule);border-radius:14px;padding:14px 16px;display:none}
+.alert.on{display:block;animation:pop .35s ease}
+@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.alert .label{color:var(--ok)}.alert p{margin:6px 0 0;font-size:14.5px}
+footer{padding:28px 0;border-top:1px solid var(--rule);font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+footer a{color:inherit}
+@media (max-width:880px){.grid{grid-template-columns:1fr;gap:36px;padding:36px 0}.phone{position:static;max-width:400px;margin:0 auto;width:100%}.screen{height:560px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<div class="wrap">
+<header class="top"><a class="brand" href="/">Cole Ormont<span>.</span></a><a class="btn" href="sms:+15088077554">Text Cole</a></header>
+<main class="grid">
+  <div>
+    <div class="label">Add-on · AI receptionist</div>
+    <h1>Never miss a customer while you're on a job.</h1>
+    <p class="lede">A receptionist that lives on your website. It answers questions about your prices and service area day or night, then texts you the lead.</p>
+    <ul class="pts">
+      <li><div class="ck">✓</div><div><b>Answers instantly, 24/7</b><span>Customers get a reply at 10pm instead of calling the next company.</span></div></li>
+      <li><div class="ck">✓</div><div><b>Knows your business</b><span>Set up with your real prices, towns, hours and how you like to book.</span></div></li>
+      <li><div class="ck">✓</div><div><b>Sends you the lead</b><span>You get a text with their name, number and what they need.</span></div></li>
+      <li><div class="ck">✓</div><div><b>Hands off when it should</b><span>Anything it isn't sure about goes straight to you, not a guess.</span></div></li>
+    </ul>
+    <div class="ctas"><a class="btn" href="sms:+15088077554?body=Hey%20Cole%2C%20I%20saw%20the%20AI%20receptionist%20demo.%20Can%20you%20add%20it%20to%20my%20site%3F">Add it to my site</a><a class="btn line" href="tel:+15088077554">Call (508) 807-7554</a></div>
+    <p class="note">This demo uses a made-up lawn company and scripted answers so you can try it out. The real version runs on AI and is set up with your actual business info before it goes live.</p>
+  </div>
+  <div>
+    <div class="phone"><div class="screen">
+      <div class="bar"><div class="av">MS</div><div><b>Maple Street Lawn Co.</b><small>● Replies instantly</small></div></div>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <form id="f"><input id="t" placeholder="Ask anything…" autocomplete="off" aria-label="Message"><button>Send</button></form>
+    </div></div>
+    <div class="alert" id="alert"><div class="label">Text to the owner · just now</div><p id="alertText"></p></div>
+  </div>
+</main>
+<footer><span>Cole Ormont · Websites for local businesses</span><span><a href="/">ormontwebdesign.com</a> · <a href="tel:+15088077554">(508) 807-7554</a></span></footer>
+</div>
+<script>
+const msgs=document.getElementById('msgs'),chips=document.getElementById('chips');
+let lead={need:'',town:'',name:'',phone:''},stage='open';
+const A={
+ price:"Most weekly mows in town run $45–$65 depending on yard size. Want a free exact quote? I just need your name and a good number.",
+ area:"Yep, we cover Plymouth, Kingston, Duxbury, Carver and Plympton. What town are you in?",
+ book:"We have openings Thursday morning and Saturday. Want me to hold one and have the owner confirm by text?",
+ cleanup:"Fall cleanups usually run $250–$600 depending on leaves and beds. We're booking 1–2 weeks out right now. Want a quote?",
+ hours:"Crews are out Mon–Sat, 7am–5pm. I answer messages any time, though.",
+ human:"No problem. I'll have the owner text you directly. What's your name and best number?",
+ unsure:"Good question. I don't want to guess on that one, so I'll pass it to the owner. What's your name and best number?"
+};
+function route(t){t=t.toLowerCase();
+ if(/(price|cost|how much|\$|charge|rate)/.test(t)){lead.need=lead.need||'Weekly mowing quote';return A.price}
+ if(/(clean ?up|leaves|leaf|fall)/.test(t)){lead.need='Fall cleanup quote';return A.cleanup}
+ if(/(town|area|service|come to|kingston|duxbury|carver|plymouth|plympton)/.test(t)){const m=t.match(/kingston|duxbury|carver|plymouth|plympton/);if(m){lead.town=m[0][0].toUpperCase()+m[0].slice(1);return `Yes, we're in ${lead.town} every week. Want a free quote or to get on the schedule?`}return A.area}
+ if(/(book|schedule|appointment|available|saturday|thursday|when)/.test(t)){lead.need=lead.need||'Wants to book';return A.book}
+ if(/(hour|open|close)/.test(t))return A.hours;
+ if(/(person|human|owner|call me|talk)/.test(t)){stage='name';return A.human}
+ if(/^(yes|yeah|sure|ok|okay|yep|please)/.test(t)){stage='name';return "Great. What's your name and best number? The owner will confirm by text."}
+ stage='name';return A.unsure}
+function add(txt,who){const d=document.createElement('div');d.className='m '+who;d.textContent=txt;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d}
+function bot(txt,then){const d=add('', 'bot');d.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';msgs.scrollTop=msgs.scrollHeight;
+ setTimeout(()=>{d.textContent=txt;msgs.scrollTop=msgs.scrollHeight;then&&then()},700+Math.min(900,txt.length*8))}
+function setChips(list){chips.innerHTML='';list.forEach(c=>{const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=c;b.onclick=()=>send(c);chips.appendChild(b)})}
+function send(t){t=t.trim();if(!t)return;add(t,'me');setChips([]);
+ if(stage==='name'){const ph=t.match(/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);lead.phone=ph?ph[0]:'';lead.name=(t.replace(ph?ph[0]:'','').replace(/[,.-]|my name is|i'?m|it'?s/gi,' ').trim().split(/\s+/)[0]||'Customer');
+  if(!lead.phone){bot(`Thanks${lead.name!=='Customer'?' '+lead.name:''}! What's the best number to reach you?`);stage='phone';return}
+  return finish()}
+ if(stage==='phone'){const ph=t.match(/\d[\d\s().-]{8,}\d/);if(!ph){bot("Just need a 10-digit number so the owner can text you.");return}lead.phone=ph[0];return finish()}
+ bot(route(t),()=>{if(stage==='open')setChips(['Yes please','Do you do fall cleanups?','Talk to a person'])})}
+function finish(){stage='done';bot(`Got it, ${lead.name}. I just sent your info to the owner, and you'll get a text back shortly to confirm. Anything else?`,()=>{
+ document.getElementById('alertText').textContent=`New lead from your website: ${lead.name}, ${lead.phone}. ${lead.need||'Question about service'}${lead.town?' in '+lead.town:''}. Reply to them directly.`;
+ document.getElementById('alert').classList.add('on');stage='open';setChips(['How much for a mow?','What are your hours?'])})}
+document.getElementById('f').onsubmit=e=>{e.preventDefault();const i=document.getElementById('t');send(i.value);i.value=''};
+setTimeout(()=>bot("Hi! I'm the Maple Street Lawn assistant. Ask me about prices, service areas or booking. I reply right away, any time.",()=>setChips(['How much for a mow?','Do you come to Kingston?','Can I book Saturday?'])),400);
+</script>
+</body></html>
